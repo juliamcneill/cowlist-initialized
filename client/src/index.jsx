@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import $ from "jquery";
+import Highlight from "./Highlight.jsx";
 import CowList from "./CowList.jsx";
 import Search from "./Search.jsx";
 
@@ -8,9 +9,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      highlight: { name: "firstHighlight", description: "nextHighlight" },
       cows: [],
     };
     this.search = this.search.bind(this);
+    this.setHighlightedCow = this.setHighlightedCow.bind(this);
   }
 
   componentDidMount() {
@@ -18,11 +21,9 @@ class App extends React.Component {
       type: "GET",
       url: "/api/cows",
       success: (cows) => {
-        console.log("set state");
         this.setState({ cows: cows });
       },
       error: (jqXHR, explanation, error) => {
-        console.log("hello?");
         console.log(explanation, error);
       },
     });
@@ -43,11 +44,16 @@ class App extends React.Component {
     });
   }
 
+  setHighlightedCow(name, description) {
+    this.setState({ highlight: { name: name, description: description } });
+  }
+
   render() {
     return (
       <div>
         <h1>Cow List</h1>
-        <CowList cows={this.state.cows} />
+        <Highlight highlight={this.state.highlight.description} />
+        <CowList cows={this.state.cows} clickHandler={this.setHighlightedCow} />
         <Search onSearch={this.search} />
       </div>
     );

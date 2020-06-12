@@ -5,14 +5,22 @@ const CowList = (props) => (
     There are {props.cows.length} cows:
     <br />
     {props.cows.map((cow) => (
-      <CowItem cow={cow} />
+      <CowItem cow={cow} clickHandler={props.clickHandler} />
     ))}
   </div>
 );
 
-const CowItem = ({ cow }) => (
+const CowItem = ({ cow, clickHandler }) => (
   <tr>
-    <td>{cow.name}</td>
+    <td>
+      <span
+        onClick={() => {
+          clickHandler(cow.name, cow.description);
+        }}
+      >
+        {cow.name}
+      </span>
+    </td>
   </tr>
 );
 
