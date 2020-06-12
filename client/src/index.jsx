@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import $ from "jquery";
 import CowList from "./CowList.jsx";
+import Search from "./Search.jsx";
 
 class App extends React.Component {
   constructor(props) {
@@ -9,6 +10,7 @@ class App extends React.Component {
     this.state = {
       cows: [],
     };
+    this.search = this.search.bind(this);
   }
 
   componentDidMount() {
@@ -26,11 +28,27 @@ class App extends React.Component {
     });
   }
 
+  search(obj) {
+    $.ajax({
+      type: "POST",
+      url: "/api/cows",
+      contentType: "application/json",
+      data: JSON.stringify({ name: obj.name, description: obj.description }),
+      success: () => {
+        this.componentDidMount();
+      },
+      error: (jqXHR, explanation, error) => {
+        console.log(explanation, error);
+      },
+    });
+  }
+
   render() {
     return (
       <div>
         <h1>Cow List</h1>
         <CowList cows={this.state.cows} />
+        <Search onSearch={this.search} />
       </div>
     );
   }
