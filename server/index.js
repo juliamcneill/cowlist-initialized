@@ -27,24 +27,42 @@ connection.connect((error) => {
 });
 
 var readAll = (callback) => {
-  connection.query("SELECT * FROM cows", function (err, results) {
-    callback(err, results);
+  connection.query("SELECT * FROM cows", function (error, results) {
+    callback(error, results);
   });
 };
 
 var create = (data, callback) => {
   connection.query(
     `INSERT INTO cows(name, description) VALUES ("${data.name}", "${data.description}")`,
-    function (err, results) {
-      callback(err, results);
+    function (error, results) {
+      callback(error, results);
     }
   );
 };
 
+var update = (data, callback) => {
+  connection.query(
+    `UPDATE cows SET name="${data.name}" WHERE id=${data.id}`,
+    function (error, results) {
+      callback(error, results);
+    }
+  );
+};
+
+var remove = (data, callback) => {
+  connection.query(`DELETE FROM cows WHERE id=${data.id}`, function (
+    error,
+    results
+  ) {
+    callback(error, results);
+  });
+};
+
 app.get("/api/cows", (req, res) => {
-  readAll(function (err, results) {
-    if (err) {
-      res.status(404).json(err);
+  readAll(function (error, results) {
+    if (error) {
+      res.status(404).json(error);
     } else {
       res.status(200).json(results);
     }
@@ -52,11 +70,31 @@ app.get("/api/cows", (req, res) => {
 });
 
 app.post("/api/cows", (req, res) => {
-  create(req.body, function (err, results) {
-    if (err) {
-      res.status(404).json(err);
+  create(req.body, function (error, results) {
+    if (error) {
+      res.status(404).json(error);
     } else {
       res.status(201).send("Successfully added!");
+    }
+  });
+});
+
+app.put("/api/cows:id", (req, res) => {
+  update(req.body, function (error, cow) {
+    if (error) {
+      res.status(404).json(error);
+    } else {
+      res.status(200).send(cow);
+    }
+  });
+});
+
+app.delete("/api/cows:id", (req, res) => {
+  remove(req.body, function (error, result) {
+    if (error) {
+      res.status(404).json(error);
+    } else {
+      res.status(200).send();
     }
   });
 });

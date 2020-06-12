@@ -9,7 +9,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      highlight: { name: "firstHighlight", description: "nextHighlight" },
+      highlight: {},
       cows: [],
     };
     this.search = this.search.bind(this);
